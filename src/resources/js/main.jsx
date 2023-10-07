@@ -1,11 +1,13 @@
 import React from "react";
+import Grid from "./components/grid";
+import Navbar from "./components/navbar";
+import WidgetControls from "./components/widgetControls";
 
 const Main = () => {
     return <div>
-        <h1>
-            Hello World
-        </h1>
+        <Navbar />
+        <WidgetControls />
+        <Grid />
     </div>
 }
-
 export default Main;
