@@ -1,4 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchCommits, fetchLanguages } from "./githubActions";
+
 
 const initialState = {
     isLoading: true,
@@ -7,14 +9,6 @@ const initialState = {
     error: ''
 }
 
-export const fetchCommits = createAsyncThunk('github/fetchCommits', async () => {
-    const response = await axios.get('https://api.github.com/repos/tensorflow/tensorflow/commits');
-    return response.data
-});
-export const fetchLanguages = createAsyncThunk('github/fetchLanguages', async () => {
-    const response = await axios.get('https://api.github.com/repos/tensorflow/tensorflow/languages');
-    return response.data
-});
 
 export const githubSlice = createSlice({
     name: "github",
