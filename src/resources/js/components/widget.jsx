@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCommits, fetchLanguages } from "../redux/features/github/githubSlice";
+import { fetchCommits, fetchLanguages } from "../redux/features/github/githubActions";
 import {Chart as ChartJS} from 'chart.js/auto';
 
-const Widget = ({ title, type }) => {
+const Widget = ({ title, type, owner, repo }) => {
+    console.log(owner, repo);
   let label = "label";
   if(type == 'commits'){
     label = 'Commit Frequency'
@@ -28,7 +29,7 @@ const Widget = ({ title, type }) => {
   if (type == 'commits') {
       useEffect(() => {
         if(!github.commits.length)
-            dispatch(fetchCommits())
+            dispatch(fetchCommits({owner: owner, repo: repo}))
             console.log(github.commits)
             const commitDates = github.commits.map((commit) => {
               const commitDate = new Date(commit.commit.author.date);
@@ -61,7 +62,7 @@ const Widget = ({ title, type }) => {
   else if(type == 'langs'){
     useEffect(()=>{
         if(!github.languages.length)
-            dispatch(fetchLanguages());
+            dispatch(fetchLanguages({owner: owner, repo: repo}));
 
             console.log(github.languages);
             const labels = Object.keys(github.languages);
@@ -86,7 +87,7 @@ const Widget = ({ title, type }) => {
   }
 
   return (
-    <div className="h-full w-full flex flex-col justify-center items-center bg-white border-solid border-blue-400">
+    <div className="h-full w-full flex flex-col justify-center items-center bg-white">
       <div>
         <span className="text-lg font-bold">{title}</span>
       </div>
