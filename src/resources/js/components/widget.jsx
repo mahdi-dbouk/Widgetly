@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Bar, Doughnut } from "react-chartjs-2";
+import { Bar, Bubble, Doughnut, Line, Pie } from "react-chartjs-2";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCommits, fetchLanguages } from "../redux/features/github/githubActions";
 import {Chart as ChartJS} from 'chart.js/auto';
 
-const Widget = ({ title, type, owner, repo }) => {
-    console.log(owner, repo);
+const Widget = ({ title, description, about, type, owner, repo, colors }) => {
+    console.log(title, description, about, type, owner, repo, colors);
   let label = "label";
-  if(type == 'commits'){
+  if(about == 'commits'){
     label = 'Commit Frequency'
   }
-  else if(type == 'langs'){
+  else if(about == 'languages'){
     label = "Languages Used"
   }
   const [data, setData] = useState({
@@ -26,11 +26,11 @@ const Widget = ({ title, type, owner, repo }) => {
   const github = useSelector((state) => state.github);
   const dispatch = useDispatch();
 
-  if (type == 'commits') {
+  if (about == 'commits') {
       useEffect(() => {
-        if(!github.commits.length)
-            dispatch(fetchCommits({owner: owner, repo: repo}))
-            console.log(github.commits)
+          if(!github.commits.length)
+              dispatch(fetchCommits({owner: owner, repo: repo}))
+
             const commitDates = github.commits.map((commit) => {
               const commitDate = new Date(commit.commit.author.date);
               return commitDate.toDateString();
@@ -51,6 +51,7 @@ const Widget = ({ title, type, owner, repo }) => {
                 {
                   ...prevData.datasets[0],
                   data: commitCounts,
+                  backgroundColor: [...colors]
                 },
               ],
             }));
@@ -59,7 +60,7 @@ const Widget = ({ title, type, owner, repo }) => {
     
       }, [dispatch, github.commits]);
   }
-  else if(type == 'langs'){
+  else if(about == 'languages'){
     useEffect(()=>{
         if(!github.languages.length)
             dispatch(fetchLanguages({owner: owner, repo: repo}));
@@ -78,7 +79,7 @@ const Widget = ({ title, type, owner, repo }) => {
                   {
                     ...prevData.datasets[0],
                     data: percentages,
-                    backgroundColor: ['red','blue','green','yellow','orange','purple']
+                    backgroundColor: [...colors]
                   },
                 ],
               }));
@@ -91,10 +92,15 @@ const Widget = ({ title, type, owner, repo }) => {
       <div>
         <span className="text-lg font-bold">{title}</span>
       </div>
+      <div>
+        <p className="text-xs text-gray-600">{description}</p>
+      </div>
       <div className="h-full w-full p-0.5">
-        {type == 'commits' &&
-        <Bar data={data} options={{ responsive: true, maintainAspectRatio: false, backgroundColor: ['red','green'] }} />}
-        {type == 'langs' && <Doughnut data={data} options={{ responsive: true, maintainAspectRatio: false }} />}
+        {type == 'bar' &&
+        <Bar data={data} options={{ responsive: true, maintainAspectRatio: false }} />}
+        {type == 'doughnut' && <Doughnut data={data} options={{ responsive: true, maintainAspectRatio: false }} />}
+        {type == 'line' && <Line data={data} options={{ responsive: true, maintainAspectRatio: false }} />}
+        {type == 'pie' && <Pie data={data} options={{ responsive: true, maintainAspectRatio: false }} />}
       </div>
     </div>
   );
