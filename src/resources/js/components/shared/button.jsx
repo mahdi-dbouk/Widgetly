@@ -4,7 +4,7 @@ const Button = ({text, icon, style, action}) => {
     return (
       <div>
           <button className={`${style}`} onClick={action}>
-              {icon}{text}
+              {icon} {text}
           </button>
       </div>
     )
